@@ -1,0 +1,285 @@
+---
+layout: post
+title: "RVM guide"
+date: 2013-12-21 22:44
+comments: true
+categories: [Ruby]
+published: true
+toc: true
+---
+
+## RVM(Ruby Version Manager)
+
+Ruby是比较流行的脚本语言，尤其是在 Ruby on Rails 大行其道之后，Ruby也渐渐成为程序员常常可以遇到的一种语言。即使你不会用Ruby编程，也很可能会需要用到Ruby编写的程序。目前我还不会Ruby语言，不过咱们是不怕折腾个基于Ruby的Octopress博客的。使用Ruby编写的程序，就需要在系统上安装Ruby interpreter，那么你很可能接触到RVM(Ruby Version Manager)。
+
+在MacOSX上系统默认安装有Ruby 1.8.7，在Linux系统上我们可以通过包管理器安装需要的Ruby版本。那么我们为什么需要RVM呢？RVM可以帮助我们：
+
+ - 安装和管理多种的Ruby语言解释器和版本。
+ - 给每个Ruby程序设置使用不同的解释器和Gemset。
+
+在Ruby的进化过程中，1.8.7和1.9.3的差别也是很大的。当我们需要同时使用和开发多个程序的时候，很容易遇到解释器和库的兼容性问题，所以RVM来帮助我们有效的隔离系统环境。我们进入每一个程序的开发目录，RVM帮我们自动地切换解释器和库。
+
+Ruby的库被称为gem。 给不同的应用项目绑定不同的库集合的好处是显而易见的。RubyGems是管理gems的工具，类似EasyInstall和PIP在python开发中的作用，方便 对其他库的安装和管理。RVM则是管理多个ruby版本和gemset的工具，方便为项目指定或切换ruby开发环境。
+
+在这篇博客里面，我主要介绍如何安装RVM和配置RVM、使用RVM管理Rubies、使用RVM为应用程序管理编译环境（即解释器和Gemset）。
+
+<!-- more -->
+
+## Install and Configure RVM
+### Install
+``` bash
+# curl前面的backslash符号的作用是，保证使用原来的curl命令，而不会意外的使用用户的alias命令，而使用用户的.curlrc配置文件。
+\curl -sSL https://get.rvm.io | bash -s stable
+# 如果很久没有升级RVM的版本，推荐先使用`get head`。这应该会升级所有的东西，保证可以跨域版本的兼容。
+rvm get head
+rvm reload
+rvm get stable
+```
+安装完成后，所以的文件和目录都存放在用户`.rvm`目录中。推荐每个用户安装自己的RVM管理Ruby开发环境，而不是在系统级安装RVM。这样更加方便用户灵活的管理和安装Ruby的开发环境和测试不同版本的解释器和库。
+
+### bashrc
+rvm的命令入口其实是一个bash函数。我们在`bashrc`中启动rvm，配置rvm的自动补齐，设置PATH环境变量。
+请参见[my ruby.bash in github](https://github.com/leohacker/MagicBox/blob/master/bash/bash.d/ruby.bash)
+```
+# Ruby
+# Load RVM into a shell session *as a function*
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
+# source the completion for rvm.
+[[ -r $rvm_path/scripts/completion ]] && . $rvm_path/scripts/completion
+# Add RVM to PATH for scripting
+PATH=$PATH:$HOME/.rvm/bin
+
+# 还可以像这样修改命令行的提示，不过我觉得有点乱。
+source "$rvm_path/contrib/ps1_functions"
+ps1_set
+```
+
+### autolibs
+现在的RVM具有一个新的功能，autolibs，它可以让RVM自动使用系统的包管理器下载所需要的依赖。这个功能默认是打开的。
+``` bash
+# 查看目前的模式
+rvm autolibs show
+rvm autolibs status
+
+# Enable autolibs feature, but let it to select the package management software.
+rvm autolibs enable
+# Specify the homebrew explicitly on MacOSX.
+rvm autolibs homebrew
+```
+
+### rvmrc
+rvmrc有系统级别的`/etc/rvmrc`，用户级别的`~/.rvmrc`，以及项目级别的`.rvmrc`。通常我们不安装系统级的RVM，所以也不需要`/etc/rvmrc`。在`~/.rvmrc`中配置RVM自身相关的配置，例如编译时线程个数，编译目标arch。项目级别的配置用来设置编译用的解释器的版本和使用的gemset。
+``` bash
+rvm_make_flags="-j 3"
+rvm_archflags="-arch x86_64"
+
+# 我不使用这个设置。我可不想因为误操作启动一个安装过程。
+rvm_install_on_use_flag=1
+```
+
+## Manage Rubies
+RVM帮助我们管理系统中的多个Ruby解释器。我们通常会有以下需求：
+
+ - 查看系统中已经安装的解释器。
+ - 安装某个版本的解释器。
+ - 在项目中指定使用某个解释器。
+ - 升级某个解释器的版本。
+ - 删除不用的版本。
+
+### Install
+
+``` bash
+# Ruby有很多种解释器，我们可以查看所有available的解释器版本
+~ $ rvm list known
+
+~ $ rvm list known | head -15
+# MRI Rubies
+[ruby-]1.8.6[-p420]
+[ruby-]1.8.7[-p374]
+[ruby-]1.9.1[-p431]
+[ruby-]1.9.2[-p320]
+[ruby-]1.9.3[-p484]
+[ruby-]2.0.0-p195
+[ruby-]2.0.0[-p353]
+[ruby-]2.1.0-rc1
+[ruby-]2.1.0-head
+ruby-head
+
+# 然后我们可以指定安装的版本。MRI Rubies是官方实现，安装时可以不指定ruby-前缀。
+~ $ rvm install 1.9.3
+# 可以指定安装某个patch的版本。list known显示的是版本的最新patch号。默认不指定patch号就使用最新版本。
+~ $ rvm install 1.9.3-p448
+
+# 1.9.3具体是哪个版本呢？
+# RVM使用ruby string这个概念来表示每个解释器。rvm strings命令告诉你简写形式的版本最终匹配到什么版本上。
+$ rvm strings 1.8.7
+ruby-1.8.7-p374
+
+# 上例1.8.7的缺省patch level是p374
+# 1.8.7的p249有个严重的segment fault错误。如果不巧，1.8.7的缺省patch level就是p249，那默认方式就不能用。
+# 所以我们可以在 ~/.rvm/user/db文件中指定1.8.7的patch为174。
+# RVM的配置信息是在~/.rvm/config/db中，这个文件会在RVM每次升级的时候被覆盖，所以不要在这边定制RVM。用户定制的
+# 的信息都在~/.rvm/user目录下。
+ruby_1.8.7_patch_level=174
+
+# 也可以不指定版本号，而使用ruby仓库的最新版。
+~ $ rvm install ruby-head
+# 或者指定某个版本的最新版。这和patch版本还不一样。
+~ $ rvm install ruby-2.1.0.head
+
+# 安装jruby。必须指明jruby-前缀。
+~ $ rvm install jruby-1.7.6
+```
+RVM还支持直接指定仓库中的Revision、Tag、Branch编译安装Rubies，甚至使用本地的patch文件。详情参见[Installing rubies](https://rvm.io/rubies/installing)。
+
+### Upgrade
+``` bash
+# 升级某个解释器。
+# 官方文档说：Will migrate gemsets, wrappers, aliases and environment files.
+$ rvm upgrade 1.9.2-p136 1.9.2-p180
+```
+
+### Use
+``` bash
+# 在当前shell使用ruby-1.9.3版本。
+# RVM隔离ruby的开发环境是基于Shell的，也就是说subshell的环境就可以不一样。
+$ rvm use 1.9.3
+
+# 列出所有安装的版本，并且提示当前使用的版本和缺省版本。
+~ $ rvm list
+# 指定ruby的缺省版本。这样打开的新Shell就会使用这个缺省版本。
+~ $ rvm use 1.9.3 --default
+# 指定default后，我们可以这样切换到default版本。
+~ $ rvm use default
+
+# use这个subcommand是默认的，所以我们可以省略之。
+$ rvm 1.9.3
+$ rvm default
+
+# info命令可以告诉我们当前ruby开发环境的信息，ruby和gem的各种信息。
+~ $ rvm info
+```
+
+### Remove
+``` bash
+# 推荐使用remove，不要使用uninstall。Remove会清除源码。
+~ $ rvm remove 1.9.1
+# cleanup archive, source code, logs, etc.
+~ $ rvm cleanup all
+```
+
+### Documentation
+``` bash
+# 生成当前解释器的文档。生成文档需要源码，所以最好在安装后立即执行。
+rvm docs generate all
+# 给所有安装的解释器执行生成文档命令。
+rvm all do rvm docs generate all
+# 如果已经使用cleanup清除了源码，则需要重新安装。
+rvm reinstall 1.9.3-p194 && rvm docs generate all
+```
+
+## Manage the Gemset for project
+每个项目需要使用的库都不一样，版本也有不同需求。所以最佳实践是给每个项目指定一个Gemset。安装和管理gem的工具是RubyGems，也就是`gem`命令。
+
+### RubyGems
+RVM使用rubygems命令来安装当前或者指定版本的rubygems。MRI1.9.x版本自带rubygems，如果你不小心安装了，可以删除它。比较复杂的情况是相同版本的ruby解释器，但使用不用版本的RubyGems，这需要自定义名称的Ruby解释器 Named Rubies 的支持。详情参见[Same Ruby Version with Different RubyGem Versions](https://rvm.io/rubies/rubygems)。
+
+``` bash
+# install the latest version of rubygems
+$ rvm rubygems current
+# install the specific version
+$ rvm rubygems 1.5.2
+# 移除后安装的rubygems
+$ rvm rubygems remove
+```
+
+### Named gem sets
+Gemset是与Ruby解释器相联系的。我们通常先进入项目的目录，切换到指定的解释器版本，然后为项目创建Gemset.Gemset必须要在安装项目需要的gem之前创建好，或者在use命令中直接创建。
+``` bash
+rvm gemset create octopress
+rvm gemset use octopress
+
+# 创建第一个Rail2.2项目
+rvm use 1.9.3@rail22 --create
+gem install rails -v 2.2.2
+# 在另一个同类型项目中使用这个gemset
+rvm use 1.9.3@rail22
+# 为某个解释器版本指定default的gemset
+rvm use 1.9.3@rail22 --default
+
+# 列出所有属于当前解释器版本的gemset
+rvm gemset list
+# 显示当前RVM环境使用的gemset
+rvm gemset name
+
+# Gemset是附属于解释器的，gemset的概念对于区分项目有更重要的意义。所以查看gemset更有效。
+~ $ rvm list gemsets
+
+rvm gemsets
+
+   ruby-1.9.3-p484 [ x86_64 ]
+   ruby-1.9.3-p484@global [ x86_64 ]
+=> ruby-1.9.3-p484@octopress [ x86_64 ]
+   ruby-2.0.0-p353 [ x86_64 ]
+   ruby-2.0.0-p353@global [ x86_64 ]
+
+# 查看gemset的目录位置
+rvm gemdir
+
+# Update
+rvm gemset update
+
+# 清空Gemdir目录中的gem文件
+rvm gemset empty 1.9.3@rail22
+
+# 删除
+rvm gemset delete 1.9.3@rail22
+
+# Copy
+# 可以用来测试应用程序在不同版本下是否通过测试。
+$ rvm gemset copy 1.8.7@rails3 1.9.2-head@rails3
+$ rvm gemset copy 1.8.7 1.9.2-head
+
+# Migrate all gemsets to rbx, which will be removed from 1.8.6.
+$ rvm migrate 1.8.6-p420 rbx-1.2.3
+
+# Export and Import
+$ rvm gemset export octopress
+$ rvm gemset import octopress
+
+## export the gemset outside the project.
+## 经过试验，无法调用gemset命令。
+#$ rvm 1.9.2@octopress do gemset export
+
+# 使用alias来简化输入
+rvm alias create rail22 1.9.3@rail22
+rvm alias delete rail22
+rvm alias list
+rvm use rail22
+```
+### Global and Default
+安装在global gemset里面的库可以被解释器所有的gemset共享。而当没有指定一个gemset的时候，ruby解释器使用default gemset中的gem文件。也就是说，当指定gemset的时候，不会访问default gemset，但是会继承global gemset中的所有库文件。而我们平时安装的时候，是安装到命名的gemset目录下的。所以要特别指定global来安装共享的库。Ref:[Gemset Basic](https://rvm.io/gemsets/basics)。
+```
+# global gemset
+rvm @global do gem install ...
+```
+
+我们可以通过切换到global gemset，然后导出gemset的列表。在我的1.9.3系统中，bundler，rake等工具是在global这个gemset中。为了可以在多个环境中轻松的开发和部署应用，通常我们不在global gemset中安装新的gem。
+
+```
+bundler -v1.3.5
+executable-hooks -v1.2.6
+gem-wrappers -v1.1.0
+rake -v0.9.2.2
+rdoc -v3.9.5
+```
+
+### Gemset per project
+可以使用rvmrc和ruby-version两种方式来配置项目级别的开发环境设置。现在很多使用ruby-version来指定项目的ruby版本。`.ruby-version`和`.ruby-gemset`搭配起来使用，我们用一条命令创建两个文件。它们的内容都只有简单的一行指定解释器版本和Gemset的名称。
+``` bash
+# rvmrc content
+rvm use 1.9.3@rail22
+
+# command to create ruby-version and ruby-gemset files.
+rvm --ruby-version use 1.9.3@rail22
+```

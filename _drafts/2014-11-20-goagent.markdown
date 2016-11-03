@@ -1,0 +1,26 @@
+---
+layout: post
+title: "Goagent"
+date: 2014-11-20 19:36
+comments: true
+categories: [Tools]
+published: true
+---
+
+## GoAgent
+不能访问Google服务的日子是不可想象的，科研是一定不可能的，写个程序多半也是困难的。所以，我们需要GoAgent。
+GoAgent提供了我们访问外部世界的一种可能，当然如果你有自己或者公司提供的VPN服务就可以忽略了。
+
+[GoAgent源码](https://github.com/goagent/goagent)是开源的，并且在网站上附有详细的设置指南和帮助。
+设置GoAgent的基本流程应该是：
+
+ - 拥有Google账号，申请GAE应用。[GAE](https://appengine.google.com/)
+ - 下载GoAgent源码。由于是Python源码，所以直接放在某个目录下即可。
+ - 修改`server/gae/gae.py`，设置`__password__ = 'your password'`
+ - 修改`local/proxy.ini`，设置`appid`和`password`。appid可以设置多个，起到负载均衡的作用。
+ - 在`server`目录，运行`python uploader.py`。
+ - 在MacOSX系统，导入`CA.crt`到keychain。在Linux系统，在Chrome的高级设置HTTPS/SSL > Manager certificates > Authorities 中导入CA证书。
+ - 在local目录，运行`python proxy.py`即可。
+ - Chrome浏览器配合SwitchySharp使用，在SwitchySharp设置页面导入`SwtichyOptions.bak`。
+
+ 显然proxy.py需要一直运行在后台。整个设置过程不复杂，容易遇到的问题是没有正确导入证书，在浏览google.com网站时报`The connection is not private`错误，解决方法就是检查证书以及导入正确的证书。
