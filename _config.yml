@@ -14,7 +14,7 @@ description              : "Blog about machine learning, distributing system, ja
 url                      : https://leohacker.github.io
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : leohacker/leohacker.github.io
-teaser                   : "/assets/images/500x300.png"
+teaser                   : "/assets/images/teaser.png"
 breadcrumbs              : true # false (default)
 words_per_minute         : 200
 comments:
