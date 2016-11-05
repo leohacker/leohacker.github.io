@@ -250,7 +250,6 @@ defaults:
       type: pages
     values:
       layout: single
-      author_profile: true
 
 # Filter Content
 show_drafts: null
