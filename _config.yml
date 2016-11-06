@@ -15,7 +15,7 @@ url                      : https://leohacker.github.io
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : leohacker/leohacker.github.io
 teaser                   : "/assets/images/teaser.png"
-breadcrumbs              : false (default)
+breadcrumbs              : false
 words_per_minute         : 200
 comments:
   provider               : disqus  # discourse", "facebook", "google-plus", "staticman", "custom"
