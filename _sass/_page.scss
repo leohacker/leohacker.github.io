@@ -55,13 +55,18 @@
     border-bottom: 1px solid $border-color;
   }
 
-  p, li, dl {
+  p, ol, ul, dl {
     font-size: 0.75em;
   }
 
-  li ol,
-  li ul {
-    font-size: 1em; 
+  ul li,
+  ol li {
+    margin-bottom: 0.2em;
+  }
+
+  li ul,
+  li ol {
+    margin-top: 0.2em;
   }
 
   ul, ol {
