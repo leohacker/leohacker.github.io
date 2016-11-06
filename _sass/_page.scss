@@ -18,9 +18,9 @@
 
 .page {
   @include breakpoint($large) {
-    @include span(10 of 12 first);
+    @include span(12 of 12 first);
     @include prefix(0 of 12);
-    @include suffix(2 of 12);
+    @include suffix(0 of 12);
   }
 
   .page__inner-wrap {
