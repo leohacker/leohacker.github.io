@@ -59,7 +59,35 @@ Jekyll的基本原理是将位于_posts目录和_pages目录下的文件，生�
 ```
  - minimal-mistakes原来的风格适合英文，而且在小屏幕上字体很合适。但是相同字号的中文有点大，而且我主要是想书写数学公式和程序代码，目标是通过桌面的大屏幕来阅读。调整CSS的设置，使得列表（包括toc)的文字大小一致，各个文字段落更加紧凑，调整标题的大小。设置Single布局使用全部宽度，不显示sidebar。
  - 语法高亮使用monoki风格。从github上找到Jekyll兼容的语法高亮CSS定义，不过缺少几项。对code的默认颜色设置为lime(亮绿色)，效果不错。具体的修改参考`_sass/_syntax.scss`文件。
+ - 在Category页面，添加Categroy的按钮在头部。
+
+ - TODO: 添加Search功能
+
+- http://victorvoid.github.io/
+- https://github.com/victorvoid/space-jekyll-template
+- http://jekyll.tips/jekyll-casts/jekyll-search-using-lunr-js/
+- https://github.com/christian-fei/Simple-Jekyll-Search
+- https://github.com/slashdotdash/jekyll-lunr-js-search
+- http://mathayward.com/jekyll-search/
+
 
 ## 运行
 
 `jekyll build`编译生成站点，`jekyll serve`在本地启动一个服务器，通过`127.0.0.1:4000`访问。在使用过程中，可能遇到github api authentication问题，可以在github上建立一个personal token，打开public repo访问权限，设置环境变量JEKYLL_GITHUB_TOKEN，就不会给出警告了。
+
+## 编写
+
+- 可以创建一个到其他网址的链接，在YAML front matter添加`link: http://url-you-want-linked`。
+
+- 嵌入视频
+
+```
+<iframe width="640" height="360" src="https://www.youtube-nocookie.com/embed/l2Of1-d5E5o?controls=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>
+```
+
+- 图片
+  - [插入图片](https://mmistakes.github.io/minimal-mistakes/post%20formats/post-image-standard/)
+  - [图片对齐](https://mmistakes.github.io/minimal-mistakes/markup/markup-image-alignment/)
+  - [Featured图片](https://mmistakes.github.io/minimal-mistakes/markup-more-images/)
+
+- [HTML Tags帮助](https://mmistakes.github.io/minimal-mistakes/markup/markup-html-tags-and-formatting/)
