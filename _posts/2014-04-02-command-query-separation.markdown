@@ -48,6 +48,7 @@ CQS的核心是基于状态机原理的，任何返回值的动作是没有 side
 
 ### CQS的缺点：原子操作
 有时应用CQS原则，我们必须要割裂包含读写的原子操作。考虑到原子操作的特性，采用其他方式让设计满足CQS原则只会让设计和代码更丑陋。
+
 ``` java
 private int x;
 public int increment_and_return_x()
@@ -60,18 +61,21 @@ public int increment_and_return_x()
 }
 ```
 
-## CQS原则 vs CQRS设计模式
-其实这个CQS术语没有CQRS(Command and Query Responsibility Segregation)来的流行。在Greg Young从设计(DDD, Domain Driven Design)和构架的角度提出CQRS概念的时候，由于和CQS的相似，他专门写了篇博客说明CQRS和CQS的区别，并正式命名为CQRS设计模式。
+### CQS原则 vs CQRS设计模式
+其实这个CQS术语没有CQRS(Command and Query Responsibility Segregation)来的流行。
+在Greg Young从设计(DDD, Domain Driven Design)和构架的角度提出CQRS概念的时候，由于和CQS的相似，他专门写了篇博客说明CQRS和CQS的区别，并正式命名为CQRS设计模式。
 
-在Greg看来，CQS和CQRS具有相同的原理，不过CQRS是作用于Evnet之上，其目的是区分Command和Query的责任，以满足设计上对于CQ的不同的非功能性需求。他认为相对CQS原则而言，CQRS可以作为对象粒度上的设计模式存在。
+在Greg看来，CQS和CQRS具有相同的原理，不过CQRS是作用于Event之上，其目的是区分Command和Query的责任，以满足设计上对于CQ的不同的非功能性需求。
+他认为相对CQS原则而言，CQRS可以作为对象粒度上的设计模式存在。
 
-## References
+### References
  - [CommandQuerySeparation - martin fowler's bliki](http://martinfowler.com/bliki/CommandQuerySeparation.html)
  - [Command-query separation - wikipedia](http://en.wikipedia.org/wiki/Command%E2%80%93query_separation)
  - [Command query separation - Greg Young](http://codebetter.com/gregyoung/2009/08/13/command-query-separation/)
 
 
 ## 相关概念
+
 ### Referential Transparency
 如果一个表达式可以被用它的输入求值后替换，而对于程序没有影响，就可以称为Referential Transparency，否则Referential Opacity。这个概念对于程序推导，程序的正确性验证都有很重要的意义。一个数学公式计算都是referential transparency的。我还不了解函数式编程，但是其是不是借鉴了这种思想呢？
 
