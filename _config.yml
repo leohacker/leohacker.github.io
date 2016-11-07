@@ -10,15 +10,15 @@ locale                   : "en_US"
 title                    : "Divergent Mind"
 title_separator          : "-"
 name                     : "Leo Jiang"
-description              : "Blog about machine learning, distributing system, java and programming stuff."
+description              : "Blog about machine learning, distributing system, java and programming."
 url                      : https://leohacker.github.io
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : leohacker/leohacker.github.io
 teaser                   : "/assets/images/teaser.png"
 breadcrumbs              : false
-words_per_minute         : 200
+words_per_minute         : 20
 comments:
-  provider               : disqus  # discourse", "facebook", "google-plus", "staticman", "custom"
+  provider               : staticman # disqus, "discourse", "facebook", "google-plus", "staticman", "custom"
   disqus:
     shortname            : "leohacker" # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
   discourse:
@@ -29,8 +29,8 @@ comments:
     num_posts            : # 5 (default)
     colorscheme          : # "light" (default), "dark"
 staticman:
-  allowedFields          : ['name', 'email', 'url', 'message']
-  branch                 : # "master", "gh-pages"
+  allowedFields          : ['name', 'email', 'message']
+  branch                 : master # "master", "gh-pages"
   commitMessage          : "New comment."
   filename               : comment-{@timestamp}
   format                 : "yml"

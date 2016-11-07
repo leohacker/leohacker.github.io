@@ -49,7 +49,7 @@ Jekyll的基本原理是将位于_posts目录和_pages目录下的文件，生�
 
  - 在文章的YAML Front Matter，可以设置CSS class。这个提供了自定义界面风格的极大灵活性。
 
- ```
+```
  layout: splash
  classes:
    - landing
@@ -57,18 +57,17 @@ Jekyll的基本原理是将位于_posts目录和_pages目录下的文件，生�
 
 <body class="layout-splash landing dark-theme">
 ```
+
  - minimal-mistakes原来的风格适合英文，而且在小屏幕上字体很合适。但是相同字号的中文有点大，而且我主要是想书写数学公式和程序代码，目标是通过桌面的大屏幕来阅读。调整CSS的设置，使得列表（包括toc)的文字大小一致，各个文字段落更加紧凑，调整标题的大小。设置Single布局使用全部宽度，不显示sidebar。
  - 语法高亮使用monoki风格。从github上找到Jekyll兼容的语法高亮CSS定义，不过缺少几项。对code的默认颜色设置为lime(亮绿色)，效果不错。具体的修改参考`_sass/_syntax.scss`文件。
  - 在Category页面，添加Categroy的按钮在头部。
-
- - TODO: 添加Search功能
-
-- http://victorvoid.github.io/
-- https://github.com/victorvoid/space-jekyll-template
-- http://jekyll.tips/jekyll-casts/jekyll-search-using-lunr-js/
-- https://github.com/christian-fei/Simple-Jekyll-Search
-- https://github.com/slashdotdash/jekyll-lunr-js-search
-- http://mathayward.com/jekyll-search/
+ - 添加Search功能
+    - http://victorvoid.github.io/
+    - https://github.com/victorvoid/space-jekyll-template
+    - http://jekyll.tips/jekyll-casts/jekyll-search-using-lunr-js/
+    - https://github.com/christian-fei/Simple-Jekyll-Search
+    - https://github.com/slashdotdash/jekyll-lunr-js-search
+    - http://mathayward.com/jekyll-search/
 
 
 ## 运行
@@ -78,7 +77,6 @@ Jekyll的基本原理是将位于_posts目录和_pages目录下的文件，生�
 ## 编写
 
 - 可以创建一个到其他网址的链接，在YAML front matter添加`link: http://url-you-want-linked`。
-
 - 嵌入视频
 
 ```

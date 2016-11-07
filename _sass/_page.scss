@@ -318,15 +318,16 @@
   margin-top: 2rem;
   margin-bottom: 10px;
   padding-top: 2rem;
-  font-size: $type-size-6;
   border-top: 1px solid $border-color;
   text-transform: uppercase;
+  font-size: $type-size-6;
 }
 
 .page__comments-form {
   padding: 1em;
   background: $lighter-gray;
   transition: $global-transition;
+  font-size: $type-size-6;
 
   &.disabled {
     input,
