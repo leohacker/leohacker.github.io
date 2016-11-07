@@ -42,11 +42,14 @@ Jekyll的基本原理是将位于_posts目录和_pages目录下的文件，生�
  - 修改_data/navigations.yml，改变站点的导航栏。每个url对应_pages下面的一个文件，可以是html或者markdown格式。
  - 创建assets/images存放图片，添加头像和缺省的文章图片。
  - 设置MathJax。在`_includes/head/custom.html`中引入MathJax脚本CDN路径，注意必须是https协议。由于Github支持https，在_config.yml中也配置了网站的url是使用https，所以要使用https的CDN。在kramdown的配置部分，要指定`math_engine: mathjax`。
+
 ```
 <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 ```
+
  - 为了正确设置MathJax，不能使用Compress HTML的特性。因为MathJax的JavaScript需要保留换行。
  - 在文章的YAML Front Matter，可以设置CSS class
+
  ```
  layout: splash
  classes:
@@ -55,7 +58,9 @@ Jekyll的基本原理是将位于_posts目录和_pages目录下的文件，生�
 
 <body class="layout-splash landing dark-theme">
 ```
-
+ - 调整CSS的设置，使得列表（包括toc)的文字大小一致，各个文字段落更加紧凑，调整标题的大小。
+ - 设置Single布局使用全部宽度，不显示sidebar。
+ 
 Images
  ... which is shown in the screenshot below:
  ![My helpful screenshot]({{ site.url }}/assets/screenshot.jpg)
