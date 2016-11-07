@@ -415,7 +415,9 @@
   float: left;
 
   @include breakpoint($large) {
-    @include pre(2.5 of 12);
+    @include span(12 of 12);
+    @include prefix(0.5 of 12);
+    @include suffix(0.5 of 12);
   }
 
   a {
