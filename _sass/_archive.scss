@@ -20,6 +20,16 @@
   }
 }
 
+.archive .page__taxonomy {
+  font-size: $type-size-7;
+}
+
+.archive .page__taxonomy-item {
+  margin-right : 2px;
+  margin-bottom: 5px;
+  padding: 3px 8px;
+}
+
 .archive__subtitle {
   margin: 1.414em 0 0;
   padding-bottom: 0.5em;
