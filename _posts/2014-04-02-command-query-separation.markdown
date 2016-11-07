@@ -1,6 +1,6 @@
 ---
 title: "Command Query Separation"
-excerpt: Design Pattern: Command Query Separation
+excerpt: Design Pattern Command Query Separation
 date: 2014-04-02 22:28
 categories: [DesignPattern]
 published: true
