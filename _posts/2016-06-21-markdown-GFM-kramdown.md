@@ -2,7 +2,7 @@
 title: "Markdown, GFM and Kramdown in Jekyll"
 excerpt: 记录Markdown的标准语法，GFM的扩展语法，Kramdown语法，以及在Jekyll里面写作用的Liquid标记。
 date: 2016-06-22 22:45
-categories: [Tools]
+categories: [Programmer]
 published: true
 ---
 {% include toc %}

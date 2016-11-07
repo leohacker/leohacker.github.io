@@ -2,7 +2,7 @@
 title: "CLDR - Locale"
 excerpt: 解读CLDR - Locale
 date: 2016-08-06 00:50
-categories: [Java]
+categories: [TextProcessing]
 published: published
 ---
 {% include toc %}
