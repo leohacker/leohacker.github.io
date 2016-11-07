@@ -1,12 +1,11 @@
 ---
-layout: post
 title: "Command Query Separation"
+excerpt: Design Pattern: Command Query Separation
 date: 2014-04-02 22:28
-comments: true
-categories: [Jargon, DesignPattern]
+categories: [DesignPattern]
 published: true
-toc: true
 ---
+{% include toc %}
 
 ## CQS的起源
 CQS，Command Query Separation，这个词是Bertrand Meyer在他的书 Object Oriented Software Construction中首次提出的。据Martin Fowler说，这本书的第一版在面向对象流行的初期有很大的影响力，而第二版对于你的肱二头肌很大的影响。想知道为什么？请follow参考的连接 :)
@@ -24,8 +23,6 @@ CQS的基本理念是，当我们设计对象时，对象的每个方法
 
 ### CQS精髓
 CQS的精髓可以用一句话来描述：**读取器是无副作用的**。
-
-<!-- more -->
 
 ### CQS的理想国：Design by contract
 在维基中提到，CQS非常适用于 design by contract 方法学。在Design by Contract中，程序的设计是由一系列内嵌在源代码中的断言(assertion)来描述的，即描述和限定在某些检查点上系统的状态。很显然，这些断言是不应该对程序的执行有影响的，CQS的设计理念非常符合这一需求。如果所有读操作都是符合CQS，无副作用的，则断言一定是无副作用的。
