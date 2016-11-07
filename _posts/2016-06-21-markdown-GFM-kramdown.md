@@ -196,3 +196,11 @@ https://mmistakes.github.io/minimal-mistakes/docs/utility-classes/
 
  - FancyBox 显示图片 http://fancyapps.com/fancybox/
  - Github Syntax Highlight https://github.com/mojombo/tpw/blob/master/css/syntax.css
+
+
+ Images
+  ... which is shown in the screenshot below:
+  ![My helpful screenshot]({{ site.url }}/assets/screenshot.jpg)
+
+ Download
+  ... you can [get the PDF]({{ site.url }}/assets/mydoc.pdf) directly.
