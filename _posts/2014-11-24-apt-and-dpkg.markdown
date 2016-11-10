@@ -1,6 +1,6 @@
 ---
 title: "apt and dpkg"
-excerpt: 介绍Maven的基本概念
+excerpt: Linux Debian包管理Apt和Dpkg的使用
 date: 2014-11-24 00:03
 categories: [Linux]
 published: true

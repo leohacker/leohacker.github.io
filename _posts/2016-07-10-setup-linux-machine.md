@@ -36,13 +36,17 @@ published: false
 ### Input Method
 
 ### GFW
-//TODO write down the tuturial of tools.
+//TODO write down the tutorial of tools.
 
 ## Software
   - Git
   - Vim
   - tmux
   - RVM
+  - Atom
+  - Intellij
+  - Jekyll
+  - zsh
 
 安装Git，克隆MagicBox仓库。vim, tmux, 拷贝配置文件就可以。
 配置git需要运行`gitconfig.linux.sh`创建git的用户配置文件。
@@ -65,12 +69,10 @@ touch logfile.9908{01..31}.tmp
 ## Atom
 install font for zsh and atom
 
-
-## RVM
+## Jekyll Blog
+### RVM
 In order to make rvm command as shell function, set the gnome-terminal to use login shell.
 Edit > Profile Preferences > Command > Run command as a login shell
-
-## Jekyll Blog
 
 ## Linux commands
  - whence
