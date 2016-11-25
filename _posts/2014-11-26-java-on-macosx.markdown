@@ -1,11 +1,9 @@
 ---
-layout: post
-title: "Install Java on MacOSX"
+title: "Java on MacOSX"
+excerpt: 当多个版本Java在MacOSX上的时候
 date: 2014-11-26 11:19
-comments: true
 categories: [MacOSX, Java]
 published: true
-toc: true
 ---
 
 ## Java on MacOSX
@@ -25,8 +23,6 @@ toc: true
     Library in the current home directory—This is the version of the directory you use the most because it is the one that contains all user-specific files. In iOS, Library is placed inside the apps data bundle. In OS X, it is the app’s sandbox directory or the current user’s home directory (if the app is not in a sandbox).
     /Library (OS X only)—Apps that share resources between users store those resources in this version of the Library directory. Sandboxed apps are not permitted to use this directory.
     /System/Library (OS X only)—This directory is reserved for use by Apple.
-
-<!-- more -->
 
 ## Intellij IDEA still use JDK1.6
 在升级系统JDK后发现一个问题，Intellij IDEA无法启动，原因是它还坚持使用JDK1.6。stackoverflow给出了两个方法：修改plist或者安装JDK1.6。
@@ -54,6 +50,3 @@ lrwxr-xr-x  1 root  wheel    59B Nov 26 14:45 CurrentJDK -> /System/Library/Java
  - `/System/Library/Frameworks/JavaVM.framework/Versions` 包含两个版本的framework支持。
 
 我们还是可以用/usr/libexec/java_home来找出系统默认的JDK的HOME目录。Eclipse等工具也会在系统中查找到多个版本的JDK。
-
-
-
