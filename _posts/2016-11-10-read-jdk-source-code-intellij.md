@@ -14,6 +14,7 @@ JDK开发社区中，AdoptOpenJDK给出过一个脚本[BuildHelpers.sh](https://
 在2015年的时候，Maurizio Cimadamore和Chris Hegarty给出了OpenJDK官方的[答案](https://bugs.openjdk.java.net/browse/JDK-8074716)。
 
 使用方法也很简单:
+
 ```
 # clone openjdk source code forest
 hg clone http://hg.openjdk.java.net/jdk9/dev 9dev.src
