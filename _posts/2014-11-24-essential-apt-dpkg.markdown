@@ -1,5 +1,5 @@
 ---
-title: "apt and dpkg"
+title: "Essential apt and dpkg"
 excerpt: Linux Debian包管理Apt和Dpkg的使用
 date: 2014-11-24 00:03
 categories: [Linux]
