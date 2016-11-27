@@ -3,7 +3,7 @@ title: "Essential rsync"
 excerpt: rsync的基本使用
 date: 2016-11-26 16:12:47
 categories: [Linux]
-published: false
+published: true
 ---
 {% include toc %}
 
