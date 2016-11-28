@@ -7,8 +7,27 @@ published: true
 ---
 {% include toc %}
 
+## 基础
 
-```
+### 原理
+rsync是镜像同步和备份工具，主要的作用是在两个目录之间拷贝文件。rsync采用只传输变化部分的算法，
+所以效率非常高。原理基本上就是，比较发送端和接收端的目录和文件，根据文件的大小和修改时间等判断文件
+是否需要更新，然后比较文件的差异，传输差异部分的块(block)。
+
+在应用场景上，设计时考虑了文件系统，符号链接，磁盘空间大小，网络连接带宽，中断的处理，大文件传输等问题。
+在生成需要同步的拷贝文件列表后，用户可以指定过滤规则使得可以准确的传输要同步的文件。也提供了方便的删除
+不需要的文件的选项。
+
+从使用的角度，我们可以从一般同步本地和服务器目录的角度了解基本的时候方式，也可以从系统管理员的角度以备份
+为目的来理解rsync的功能。原来有使用rsync来达到备份系统，恢复系统，同步多个系统的用法，不过现在DevOps
+主要使用虚拟机，软件配置工具(puppet)，Docker，就没有必要在这些关键的领域使用rsync，毕竟rsync有同步失败，
+非原子化，有状态不一致的可能。
+
+### 语法
+rsync的语法就是`rsync [options...] src... [dest]`，可以有多个源目录，不过通常只有一个。发送端
+和接收端可以是服务器端`user@host:path`，但是不支持两个服务器同步，一定是一个本地，一个远程。
+
+```bash
 # copy the src/bar to /data/dest/bar, will create a new directory 'bar' in dest.
 rsync -avz src/bar /data/dest
 
@@ -22,11 +41,16 @@ rsycn -avz src/bar/ /data/dest/bar
 rsycn -avz somehost:
 ```
 
-`~`符号如果是起始的字符，会被Shell转换为用户目录，但是如果是`--option=~/foo`就不会，这种情况要
-使用`--option ~/foo`的形式。
+我们可以理解为将最后一个路径分隔字符后的目录和文件内容传输给接收端。如果不指定接收端，就列出所有文件。
 
+## 选项（Options）
+选项的设计满足了使用rsync的各种用户场景。首先让我们先说一个使用选项(option)时候需要注意的小技巧。
+~符号如果是起始的字符，会被Shell转换为用户目录，但是如果是`--option=~/foo`就不会，
+这种情况要使用`--option ~/foo`的形式。
 
-### Options
+下面主要根据选项的分类记录其用法，这里仅包括部分，特别常用的(vz)和比较偏门用法的没有列出。
+
+### 一般选项
 
 ```
 # General
@@ -37,7 +61,7 @@ rsycn -avz somehost:
   和verbose，itemize-changes一起使用，模拟实际运行。
 
 --itemize-changes
-  列出变化的信息。
+  列出所有变化的文件和信息。
 
 --no-OPTION
   允许你在使用其他选项的同时，关闭某些选项，尤其在使用-a的情况下有用。例如 -a --no-o ，保留其他信息但不包括owner信息。
@@ -56,8 +80,10 @@ rsycn -avz somehost:
 -h, --human-readable
   human readable数字格式。三个level，缺省是一个h，如果要以1000为单位就是 -hh ，以1024为单位就是 -hhh。
   如果要没有格式的数字，-no=h。
+```
 
-# 比较算法
+### 比较算法
+```
 -I, --ignore-times
   关闭快速比较算法的时间戳条件，这导致所有文件都会被更新。
 
@@ -67,8 +93,10 @@ rsycn -avz somehost:
 -c, --checksum
   你也可以让rsync在传输前使用checksum的方式比较文件，而不是使用快速比较算法。
   无论那种算法，rsync都会在传输完毕后使用checksum验证文件正确传输。rsync是使用MD5算法计算checksum。
+```
 
-# 传输方式
+### 传输方式
+```
 -a, --archive
   等价于 -rlptgoD, recursive, copy symlink, preserve permission, modification time,
   group, owner, copy devices and specials files. 相关的选项还有numeric-ids, usermap, groupmap,
@@ -99,15 +127,32 @@ rsycn -avz somehost:
   这个选项挺魔法的。当接收端没有某个文件的时候，通常是文件重新传递。不过考虑如果是有个文件在接收端改名的情况，就没有必要重新传递。于是fuzzy
   算法会智能的查找是否有相同大小，修改时间，相似名字的文件，来加速文件的传输和创建。
 
+-S, --sparse
+  某些文件里面含有大量的空字符，例如虚拟机文件中的未使用空间，这种稀疏文件应该使用这个选项，否则备份文件可能比源文件更大。
+
 -T, --temp-dir=DIR
   指定临时文件的工作目录。
+```
 
-# Backup
+### 处理大文件
+```
+--inplace
+  inplace的更新方式显然很危险，不过在处理大文件的时候，或者要保持硬链接的时候，或者在一个copy-on-write的文件系统上，有用。
+--append
+--append-verify
+  传输文件的时候，假设文件开头的部分是相同的，只有尾部的数据是新添加的。显然只针对某些数据文件。verify版本的选项会在结束后校验，如果不同，
+  就使用inplace的方式重新传输。
+
+--max-size=SIZE
+```
+
+### 备份
+```
 -b, --backup
   对更新的文件做备份，可以使用backup-dir选项设置备份的目录，suffix设置备份的后缀。
 
 -u, --update
-  更新模式，如果目标端的文件更新，就不传输。
+  更新模式，如果目标端的文件比源文件还要新，就不传输。
 
 --existing, --ignore-non-existing
   更新模式，仅更新目标端存在的文件。
@@ -120,18 +165,10 @@ rsycn -avz somehost:
   这个选项的目的是，拷贝得到一个新的备份目录，而不干扰原来的备份目录，在完成所有文件备份后才切换备份目录。
 --link-dest=DIR
   相比copy-dest，更进一步的，使用硬链接的方式来拷贝相同的文件。
+```
 
-# 处理大文件
---inplace
-  inplace的更新方式显然很危险，不过在处理大文件的时候，或者要保持硬链接的时候，或者在一个copy-on-write的文件系统上，有用。
---append
---append-verify
-  传输文件的时候，假设文件开头的部分是相同的，只有尾部的数据是新添加的。显然只针对某些数据文件。verify版本的选项会在结束后校验，如果不同，
-  就使用inplace的方式重新传输。
-
---max-size=SIZE
-
-# 符号链接
+### 符号链接
+```
 -l, --links
   保持符号链接。
 -L, --copy-links,
@@ -147,8 +184,10 @@ rsycn -avz somehost:
   拷贝目录的符号链接。当发送方是符号链接的目录，而接收方是真实的目录，如果不使用这个选项，接收方的目录会被删除。
 -K, --keep-dirlinks
   保持目录的符号链接。当发送方是真实目录，而接收方是符号链接目录，如果不使用这个选项，接收方的符号链接会被删除。
+```
 
-# 删除多余文件
+### 删除多余文件
+```
 --delete
   在接收端删除发送端没有的文件。实际删除文件前，最好用dry run先查看会删除哪些文件。
 --delete-before
@@ -157,20 +196,10 @@ rsycn -avz somehost:
   在传输每个目录前扫描和删除。
 --deleted-excluded
   和--exclude一起使用，除了删除发送端不存在的文件，也删除被列出的excluded的文件。
+```
 
-# 文件过滤
--C, --cvs-exclude
-  忽略各种版本管理文件和目录，备份文件。
-  RCS SCCS CVS CVS.adm RCSLOG cvslog.* tags TAGS .make.state .nse_depinfo *~ #* .#* ,* _$* *$ *.old *.bak *.BAK
-  *.orig *.rej .del-* *.a *.olb *.o  *.obj *.so *.exe *.Z *.elc *.ln core .svn/ .git/ .hg/ .bzr/
-
---exclude=PATTERN
---exclude-from=FILE
---include=PATTERN
---include-from=FILE
-  指定包含或排除的文件，使用通配模式。
-
-# 拷贝文件列表
+### 拷贝文件列表
+```
 --files-from=FILE
   在文件中指定具体的文件列表。当使用这个选项的时候，--relative和--dirs是隐含的选项，可以和-a一起使用但是不包括-r的含义，需要显式使用-r选项。
 
@@ -185,4 +214,58 @@ rsycn -avz somehost:
 --list-only
   列出源文件。
 
+```
+
+### 文件过滤
+过滤规则使得我们可以选择哪些文件需要传输(include)和哪些文件排除(exclude)。当拷贝文件列表创建以后，rsync针对每个文件
+或目录比对过滤规则，第一个匹配的规则生效。如果第一个匹配的是exclude模板，文件被排除，如果是include模板，文件不被排除，如果没有
+匹配，文件不被排除。所以过滤规则在命令上的顺序很重要。
+
+```
+-C, --cvs-exclude
+  忽略各种版本管理文件和目录，备份文件。
+  RCS SCCS CVS CVS.adm RCSLOG cvslog.* tags TAGS .make.state .nse_depinfo *~ #* .#* ,* _$* *$ *.old *.bak *.BAK
+  *.orig *.rej .del-* *.a *.olb *.o  *.obj *.so *.exe *.Z *.elc *.ln core .svn/ .git/ .hg/ .bzr/
+
+--exclude=PATTERN
+--exclude-from=FILE
+--include=PATTERN
+--include-from=FILE
+```
+
+当使用--filter的时候，可以指定Filter Rules。在用户手册中， FILTER RULES小节说明了如何指定这些规则。其中的修饰符可以实现，
+指定需要传输的隐藏文件，保护文件不被删除，从其他文件中获得过滤规则，等等。INCLUDE/EXCLUDE PATTERN RULES小节说明了如何书写pattern。
+常用的+-两个符号，不过可以有其他修饰符，所以pattern的书写是十分复杂的。
+
+filter, include, exclude在命令上只能使用一次，如果想指定多个规则，请使用include-from/exclude-from选项。
+
+例子：
+```
+# won't work as the parent directory "some" is excluded by the '*' rule.
++ /some/path/this-file-will-not-be-found
++ /file-is-included
+- *
+
+# workaround
++ /some/
++ /some/path/
++ /some/path/this-file-is-found
++ /file-also-included
+- *
+```
+
+```
+"- *.o" would exclude all names matching *.o
+
+"- /foo" would exclude a file (or directory) named foo in the transfer-root directory
+
+"- foo/" would exclude any directory named foo
+
+"- /foo/*/bar" would exclude any file named bar which is at two levels below a directory named foo in the transfer-root directory
+
+"- /foo/**/bar" would exclude any file named bar two or more levels below a directory named foo in the transfer-root directory
+
+The combination of "+ */", "+ *.c", and "- *" would include all directories and C source files but nothing else (see also the --prune-empty-dirs option)
+
+The combination of "+ foo/", "+ foo/bar.c", and "- *" would include only the foo directory and foo/bar.c (the foo directory must be explicitly included or it would be excluded by the "*")
 ```
