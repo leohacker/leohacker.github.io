@@ -240,13 +240,14 @@ rsycn -avz somehost:
 filter, include, exclude在命令上只能使用一次，如果想指定多个规则，请使用include-from/exclude-from选项。
 
 例子：
+
 ```
 # won't work as the parent directory "some" is excluded by the '*' rule.
 + /some/path/this-file-will-not-be-found
 + /file-is-included
 - *
 
-# workaround
+# workaround: list the parent directory first.
 + /some/
 + /some/path/
 + /some/path/this-file-is-found
@@ -256,16 +257,10 @@ filter, include, exclude在命令上只能使用一次，如果想指定多个�
 
 ```
 "- *.o" would exclude all names matching *.o
-
 "- /foo" would exclude a file (or directory) named foo in the transfer-root directory
-
 "- foo/" would exclude any directory named foo
-
 "- /foo/*/bar" would exclude any file named bar which is at two levels below a directory named foo in the transfer-root directory
-
 "- /foo/**/bar" would exclude any file named bar two or more levels below a directory named foo in the transfer-root directory
-
 The combination of "+ */", "+ *.c", and "- *" would include all directories and C source files but nothing else (see also the --prune-empty-dirs option)
-
 The combination of "+ foo/", "+ foo/bar.c", and "- *" would include only the foo directory and foo/bar.c (the foo directory must be explicitly included or it would be excluded by the "*")
 ```
