@@ -16,6 +16,7 @@ Docker技术提供了操作系统层面的虚拟化技术，利用Linux内核的
 
 ### Install
 需要安装的Docker是Docker Engine，主要的功能是运行Docker Image。Docker Engine提供Restful API，Docker CLI通过调用这些API提供用户操作的界面。
+
 ```bash
 $ sudo apt-get update
 $ sudo apt-get install apt-transport-https ca-certificates
@@ -178,6 +179,7 @@ $ docker run -d --name db3 --volumes-from db1 training/postgres
 ```
 
 volume和容器不是绑定的，所以删除容器不会删除数据卷。
+
 ```
 # find dangline volumes
 docker volume ls -f dangling=true
@@ -189,6 +191,7 @@ $ docker run --rm -v /foo -v awesome:/bar busybox top
 ```
 
 备份和恢复数据卷
+
 ```
 # 将dbstore中的数据/dbdata备份到/backup/backup.tar，并通过数据卷加载传递到本地目录。
 $ docker run --rm --volumes-from dbstore -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /dbdata
