@@ -33,11 +33,15 @@ $ sudo apt-get install docker-engine
 $ sudo service docker start
 $ sudo systemctl enable docker
 
+# make you run the docker without sudo.
+$ sudo groupadd docker
+$ sudo usermod -aG docker $USER
+
 # show the info of docker engine.
-docker info
+$ docker info
 ```
 
-### Docker Image Management
+### Image Management
 ```bash
 # login into docker hub.
 docker login
@@ -67,7 +71,7 @@ docker rmi -f image-id
 docer history image:tag
 ```
 
-## Run docker
+## Run
 ```bash
 # run ubuntu image with interactive mode(-i) pseudo tty(-t).
 docker run -t -i ubuntu /bin/bash
@@ -95,6 +99,7 @@ docker rm container-name
 ```
 
 ### Network
+
 ```bash
 # list all the networks (default: null, host, bridge)
 $ docker network ls
@@ -113,6 +118,83 @@ $ docker run -d --network=my-bridge-network --name db training/postgres
 
 # run the interactive shell for container db.
 $ docker exec -it db bash
+```
+
+### Data
+Docker的最佳实践推荐在layers中只包含程序，而不是数据。理由很自然，数据是可能变化的，docker作为镜像要被许多项目共享。
+同时程序和数据是一体的，没有任何数据处理的程序是没有意义的。那么数据放哪里呢？Layers是只读，不能保持数据，最外层的可写层
+不是持久存在的，如果container被删除了，也就不存在了。作为虚拟云技术，container的生命期完全是动态的，所以需要一个外部的
+持久层的数据存储位置。
+
+> A data volume is a directory or file in the Docker host’s filesystem that is mounted directly into a container. Data volumes are not controlled by the storage driver. Reads and writes to data volumes bypass the storage driver and operate at native host speeds. You can mount any number of data volumes into a container. Multiple containers can also share one or more data volumes.
+
+```bash
+# 指定一个container内部的位置，使用docker分配的一个volumes目录，匿名数据卷。
+# /webapp mount point inside the container, you can use inspect to find the location folder on host.
+# /var/lib/docker/volumes/437841e70eaf07782366ba554ce7782b5805cf496256220ae3187946a0815639/_data
+docker run -d -P --name web -v /webapp training/webapp python app.py
+```
+
+```bash
+# 指定docker分配和volumes目录名称
+docker run -d -P --name web -v webapp_data:/webapp training/web python app.py
+```
+```json
+"Mounts": [
+    {
+        "Name": "webapp_data",
+        "Source": "/var/lib/docker/volumes/webapp_data/_data",
+        "Destination": "/webapp",
+        "Driver": "local",
+        "Mode": "z",
+        "RW": true,
+        "Propagation": "rprivate"
+    }
+],
+```
+
+```bash
+# 指定一个主机上的目录作为volume目录。
+# mount a host directory as data volume.  -v host_path:container_path
+$ docker run -d -P --name web -v /src/webapp:/webapp training/webapp python app.py
+```
+
+本质上，数据卷的记载就是一个mount的过程，容器内部的目录被另外一个目录覆盖，在unmount后，原来的目录又暴露出来，完全和mount的行为一致。
+所以-v 参数也可以用来mount文件，不过由于编辑动作可能导致inode变化，而在容器环境下不允许，所以其实不推荐mount需要写的文件。所以基本上
+来说，数据卷这个特性目的就是为了加载数据目录。
+
+docker还支持数据卷容器
+
+```
+# 创建一个dbstore名字的数据卷容器
+$ docker create -v /dbdata --name dbstore training/postgres /bin/true
+# db1, db2使用来自dbstore的数据目录/dbdata
+$ docker run -d --volumes-from dbstore --name db1 training/postgres
+$ docker run -d --volumes-from dbstore --name db2 training/postgres
+
+# 支持volume的链式引用
+$ docker run -d --name db3 --volumes-from db1 training/postgres
+```
+
+volume和容器不是绑定的，所以删除容器不会删除数据卷。
+```
+# find dangline volumes
+docker volume ls -f dangling=true
+docker rm <volume name>
+
+# docker daemon will clean up anonymous volumes when container deleted.
+# /foo deleted but not awesome volume.
+$ docker run --rm -v /foo -v awesome:/bar busybox top
+```
+
+备份和恢复数据卷
+```
+# 将dbstore中的数据/dbdata备份到/backup/backup.tar，并通过数据卷加载传递到本地目录。
+$ docker run --rm --volumes-from dbstore -v $(pwd):/backup ubuntu tar cvf /backup/backup.tar /dbdata
+
+# 加载本地目录到容器的backup目录，然后将备份文件恢复到/dbdata目录。
+$ docker run -v /dbdata --name dbstore2 ubuntu /bin/bash
+$ docker run --rm --volumes-from dbstore2 -v $(pwd):/backup ubuntu bash -c "cd /dbdata && tar xvf /backup/backup.tar --strip 1"
 ```
 
 ### Info of Container
@@ -149,8 +231,6 @@ docker build -t name:tag .
 Create the dockerfile in the current folder, them build an images with name:tag.
 
 
-### Data volume
-A data volume is a directory or file in the Docker host’s filesystem that is mounted directly into a container. Data volumes are not controlled by the storage driver. Reads and writes to data volumes bypass the storage driver and operate at native host speeds. You can mount any number of data volumes into a container. Multiple containers can also share one or more data volumes.
 
 ### Troubleshooting
 https://docs.docker.com/toolbox/faqs/troubleshoot/
