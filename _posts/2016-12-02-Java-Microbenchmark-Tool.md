@@ -6,6 +6,7 @@ categories: [Java]
 published: true
 ---
 
+## Java Microbenchmark Tools
 这篇博客只是一个简单的笔记，记录一个从前不了解的概念Microbenchmark，以及它在Java上的两个工具：JMH （Java Microbenchmark Harness) 和 Caliper 。
 
 刚开始的时候，不清楚Microbenchmark的含义，不知道这个micro是什么东西micro。后来看了stackoverflow上的一个答案，原来就是指测试那些很小的操作，
