@@ -5,9 +5,6 @@ date: 2016-12-02 00:12
 categories: [Java]
 published: true
 ---
-{% include toc %}
-
-## Java Microbenchmark Tools
 
 这篇博客只是一个简单的笔记，记录一个从前不了解的概念Microbenchmark，以及它在Java上的两个工具：JMH （Java Microbenchmark Harness) 和 Caliper 。
 
