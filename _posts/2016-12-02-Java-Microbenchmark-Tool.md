@@ -1,7 +1,7 @@
 ---
 title: "Java Microbenchmark Tool"
 excerpt: Microbenchmark
-date: 2016-12-02 00:12:03
+date: 2016-12-02 00:12
 categories: [Java]
 published: true
 ---

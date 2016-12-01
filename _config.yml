@@ -16,7 +16,7 @@ baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : leohacker/leohacker.github.io
 teaser                   : "/assets/images/teaser.png"
 breadcrumbs              : false
-words_per_minute         : 20
+words_per_minute         : 10
 comments:
   provider               : staticman # disqus, "discourse", "facebook", "google-plus", "staticman", "custom"
   disqus:
@@ -255,5 +255,5 @@ defaults:
 # Filter Content
 show_drafts: null
 limit_posts: 0
-future:      false
+future:      true
 unpublished: false
