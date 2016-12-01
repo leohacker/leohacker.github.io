@@ -3,7 +3,7 @@ title: "Essential Docker"
 excerpt: Docker的基本概念和使用
 date: 2016-11-10 21:30
 categories: [DevOps]
-published: false
+published: true
 ---
 {% include toc %}
 
@@ -139,6 +139,7 @@ docker run -d -P --name web -v /webapp training/webapp python app.py
 # 指定docker分配和volumes目录名称
 docker run -d -P --name web -v webapp_data:/webapp training/web python app.py
 ```
+
 ```json
 "Mounts": [
     {
@@ -223,14 +224,3 @@ docker logs -f container-name
 # check the process status in container.
 docker top container-name
 ```
-
-### Build Docker Image - Dockerfile
-```
-docker build -t name:tag .
-```
-Create the dockerfile in the current folder, them build an images with name:tag.
-
-
-
-### Troubleshooting
-https://docs.docker.com/toolbox/faqs/troubleshoot/
