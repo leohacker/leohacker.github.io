@@ -45,7 +45,7 @@ $ docker info
 ### Image Management
 ```bash
 # login into docker hub.
-docker login
+docker login -u username
 
 # search the images
 docker search sinatra
@@ -60,7 +60,7 @@ docker pull training/sinatra
 docker commit -m "Comment"  -a "author" container-id user/image-name:tag
 
 # tag the image with version.
-docker tag image-id user/image-name:tag-version
+docker tag image-id user/image-name:tag
 
 # list local images
 docker images
@@ -69,10 +69,10 @@ docker images
 docker rmi -f image-id
 
 # show image layers
-docer history image:tag
+docker history image:tag
 ```
 
-## Run
+## Container Management
 ```bash
 # run ubuntu image with interactive mode(-i) pseudo tty(-t).
 docker run -t -i ubuntu /bin/bash
@@ -95,8 +95,39 @@ docker start container-name
 docker stop container-name
 # restart
 docker restart container-name
+# kill
+docker kill container-name
 # remove
 docker rm container-name
+# remove all containers
+docker rm `docker ps -a -q`
+
+# check docker container status
+docker ps
+# check container size
+docker ps -s
+
+# attach to a container
+# 如果是bash进程作为 foreground，得到是一个交互式界面。退出bash也就退出container。
+# 如果是一个服务进程作为foreground，得到是此服务进程的log输出界面。
+docker attach
+```
+
+### Info in Container
+```bash
+# inspect: list all the information of docker container/image in json format.
+docker inspect container-name
+
+# check the process output in docker container.
+docker logs container-name
+# tail -f like
+docker logs -f container-name
+
+# show the host mapping for container port
+docker port container-name 5000
+
+# check the process status in container.
+docker top container-name
 ```
 
 ### Network
@@ -199,31 +230,4 @@ $ docker run --rm --volumes-from dbstore -v $(pwd):/backup ubuntu tar cvf /backu
 # 加载本地目录到容器的backup目录，然后将备份文件恢复到/dbdata目录。
 $ docker run -v /dbdata --name dbstore2 ubuntu /bin/bash
 $ docker run --rm --volumes-from dbstore2 -v $(pwd):/backup ubuntu bash -c "cd /dbdata && tar xvf /backup/backup.tar --strip 1"
-```
-
-### Info of Container
-```bash
-# show the host mapping for container port
-docker port container-name 5000
-
-# check docker container status
-docker ps
-
-# check container size
-docker ps -s
-
-# inspect: list all the information of docker container in json format.
-docker inspect container-name
-```
-
-### Info in Container
-```bash
-# check the process output in docker container.
-docker logs container-name
-
-# tail -f like
-docker logs -f container-name
-
-# check the process status in container.
-docker top container-name
 ```

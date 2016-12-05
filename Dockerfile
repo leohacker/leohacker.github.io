@@ -8,8 +8,7 @@ RUN  gem install bundle && \
 COPY Gemfile /root
 RUN  cd /root && bundle install
 
-ENV blog=/root/hackerblog
-VOLUME ${blog}
+VOLUME /root/hackerblog
 EXPOSE 400
 
 ENTRYPOINT ["jekyll", "server", \
