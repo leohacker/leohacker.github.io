@@ -8,7 +8,10 @@ published: true
 {% include toc %}
 
 ## apt and dpkg
-在Linux发行版中，Ubuntu拥有众多的用户。Ubuntu是基于Debian的派生，而且大大改进了兼容性和易用性。Debian的哲学是仅包含开源的软件，这大大限制了它在一般用户中的推广。Ubuntu的出现改变了这一切，于是更多的人从RedHat系的RPM/YUM转向了APT/dpkg。相对于YUM，APT包含多个命令行工具，使用上要复杂一点。所以很需要一个CheatSheet记录那些有用的命令。
+在Linux发行版中，Ubuntu拥有众多的用户。Ubuntu是基于Debian的派生，而且大大改进了兼容性和易用性。
+Debian的哲学是仅包含开源的软件，这大大限制了它在一般用户中的推广。Ubuntu的出现改变了这一切，
+于是更多的人从RedHat系的RPM/YUM转向了APT/dpkg。相对于YUM，APT包含多个命令行工具，
+使用上要复杂一点。所以很需要一个CheatSheet记录那些有用的命令。
 
 常用的APT系的命令行工具有：
 
@@ -61,10 +64,11 @@ $ apt-get changelog vsftpd
 # 检查是否有Broken Dependencies.
 $ apt-get check
 ```
-<!-- more -->
 
 ### apt-cache and apt-file
-`apt-cache`是基于软件包数据库和软件包的元数据查找匹配结果，而`apt-file`是基于软件包数据库和软件包包含的文件列表来查找匹配结果。
+`apt-cache`是基于软件包数据库和软件包的元数据查找匹配结果，
+而`apt-file`是基于软件包数据库和软件包包含的文件列表来查找匹配结果。
+
 ```bash
 # 查找软件包
 $ apt-cache search pkg
@@ -88,7 +92,6 @@ $ apt-file list --regexp ^pkg$
 ```
 
 ### dpkg
-
 ```bash
 # 查看软件包pkg的安装状态
 $ dpkg -l pkg
