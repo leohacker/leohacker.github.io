@@ -54,6 +54,47 @@ published: false
 ## zsh
 https://www-s.acm.illinois.edu/workshops/zsh/toc.html
 
+update the oh-my-zsh manually, just run `upgrade_oh_my_zsh`.
+
+features:
+ - path expansion: /u/lo/b > /usr/local/bin
+ - path expansion: /u/l/b > /usr/l/b  tab completion
+ - path replace: /u/lo/b > /usr/local/bin, cd bin share > /usr/local/share
+ - right prompt
+ - spell correction
+ - history substring search
+ - syntax highlight command
+ - global alias
+
+```
+alias -g gp='| grep -i'
+
+$ ps ax gp ruby
+=> ps ax | grep -i ruby
+```
+
+ - suffix alias - Open with
+```
+alias -s rb=vim
+alias -s log="less -MN"
+alias -s html=chromium
+
+$ user.rb
+=> vim user.rb
+$ development.log
+=> less -MN development.log
+```
+
+ - extended globbing
+```
+# search the log recursively
+ls -l **/*.log
+```
+ - environment edit
+```
+$ vared PATH
+```
+
 global alias
 ```
 alias -g prc=~/.procmailrc
@@ -77,3 +118,19 @@ Edit > Profile Preferences > Command > Run command as a login shell
 ## Linux commands
  - whence
    return non-zero if failed, but no error msg.
+
+// Debian
+ - systemctl restart service
+ - systemctl stop service
+ - systemctl start service
+ - systemctl halt     // halt system
+ - systemctl reboot   // reboot system
+ - systemctl poweroff // shutdown
+ - systemctl suspend  // suspends system
+
+ /etc/network/interfaces    network interface configuration
+ ifup ifdown [device]       start or stop network interface
+ /var/log      all log file
+ /etc/default  default value for many daemons and services.
+ /etc          all system configuration
+ /
