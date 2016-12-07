@@ -60,7 +60,7 @@ rsycn -avz somehost:
 -n, --dry-run
   和verbose，itemize-changes一起使用，模拟实际运行。
 
---itemize-changes
+-i, --itemize-changes
   列出所有变化的文件和信息。
 
 --no-OPTION
@@ -85,7 +85,7 @@ rsycn -avz somehost:
 ### 比较算法
 ```
 -I, --ignore-times
-  关闭快速比较算法的时间戳条件，这导致所有文件都会被更新。
+  关闭快速比较算法的时间戳条件，即不跳过大小和时间匹配的文件，这导致所有文件都会被更新。
 
 --size-only
   如果你使用了其他同步工具，而这个工具不能很好的保留修改时间戳，然后在使用rsync的时候，可以将快速比较算法改为只比较文件大小。
@@ -93,6 +93,11 @@ rsycn -avz somehost:
 -c, --checksum
   你也可以让rsync在传输前使用checksum的方式比较文件，而不是使用快速比较算法。
   无论那种算法，rsync都会在传输完毕后使用checksum验证文件正确传输。rsync是使用MD5算法计算checksum。
+
+-O, --omit-dir-times
+  omit directories from --times
+-J, --omit-dir-times
+  omit symlinks from --times
 ```
 
 ### 传输方式
@@ -156,6 +161,8 @@ rsycn -avz somehost:
 
 --existing, --ignore-non-existing
   更新模式，仅更新目标端存在的文件。
+--ignore-existing
+  不更新目标端已经存在的文件。其作用是在一次rsync传输中断，再次重传。这个是搭配link-dest这样的模式来使用的。
 
 --compare-dest=DIR
   设置用来比较的目录树。接收端存在一个旧版本的备份，现在得到一个需要更新的文件的目录树，于是将旧版本的目录树作为比较用的目录树，rsync命令的dest
