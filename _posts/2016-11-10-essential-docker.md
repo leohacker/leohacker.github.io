@@ -7,6 +7,8 @@ published: true
 ---
 {% include toc %}
 
+本文根据Docker的官方文档整理而成。
+
 ### Introduction
 Docker技术提供了操作系统层面的虚拟化技术，利用Linux内核的cgroups和kernel namespaces，还有Union特性的文件系统，在Linux主机上构建出一个隔离的运行实例，称为容器(container)。镜像是容器运行前的文件系统快照，容器是运行时实例。在Docker的官方网页[镜像，容器和存储器驱动器](https://docs.docker.com/engine/userguide/storagedriver/imagesandcontainers/)介绍了image和其中的多层layer的概念，layer是只读的文件系统，运行时的容器有一个可写层，基于copy on write策略。Layer是在所有镜像之间可以共享的，所以任何一个docker镜像可能很小。如果多个镜像是基于某一个基础镜像做出来的，基础的部分只需要下载一次，效率非常高。
 

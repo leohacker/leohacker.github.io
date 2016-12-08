@@ -1,5 +1,5 @@
 ---
-title: "Essential rsync"
+title: "Essential Rsync"
 excerpt: rsync的基本使用
 date: 2016-11-26 16:12:47
 categories: [Linux]
@@ -48,7 +48,8 @@ rsycn -avz somehost:
 ~符号如果是起始的字符，会被Shell转换为用户目录，但是如果是`--option=~/foo`就不会，
 这种情况要使用`--option ~/foo`的形式。
 
-下面主要根据选项的分类记录其用法，这里仅包括部分，特别常用的(vz)和比较偏门用法的没有列出。
+下面主要根据选项的分类记录其用法，这里仅包括部分，特别常用的(vz)和比较偏门用法的没有列出。文章根据Rsync的
+man page整理而成。
 
 ### 一般选项
 

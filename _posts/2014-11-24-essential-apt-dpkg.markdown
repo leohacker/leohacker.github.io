@@ -11,9 +11,9 @@ published: true
 ## Debian package management
 在Linux发行版中，Ubuntu拥有众多的用户。Ubuntu是基于Debian的派生，而且大大改进了兼容性和易用性。
 Debian的哲学是仅包含开源的软件，这大大限制了它在一般用户中的推广。Ubuntu的出现改变了这一切，
-于是更多的人从RedHat系的RPM/YUM转向了APT/dpkg。相对于YUM，APT包含多个命令行工具，
-使用上要复杂一点。所以很需要一个CheatSheet记录那些有用的命令。由于其他图形化的工具都基于APT工具，
-而APT基于dpkg，而且使用这些工具的主要途径是命令行和脚本，所以不研究Aptitude或者其他工具。
+于是更多的人从RedHat系的RPM/YUM转向了apt/dpkg。相对于YUM，apt包含多个命令行工具，
+使用上要复杂一点。所以很需要一个CheatSheet记录那些有用的命令。由于其他图形化的工具都基于apt工具，
+而apt又基于dpkg，而且使用这些工具的主要途径是命令行和脚本，所以本文不研究Aptitude或者其他图形化工具。
 
 常用的APT系的命令行工具有：
 
@@ -22,7 +22,7 @@ Debian的哲学是仅包含开源的软件，这大大限制了它在一般用�
  - apt-cache 提供查询本地cache功能
  - apt-file  提供查询远端仓库的功能
 
-**阅读列表**
+### 阅读列表
 
  - [Debian FAQ](https://www.debian.org/doc/manuals/debian-faq)的第7,8小节基本就说明了Debian软件包
  的基本概念和常用工具。如果对软件包的依赖系统和远程仓库有所了解，这些概念就很好理解了。基本上阅读FAQ，使用时在查找
