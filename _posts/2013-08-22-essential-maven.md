@@ -9,23 +9,18 @@ published: true
 
 ## Maven 是什么
 
-[Maven](maven.apache.org) 是Apache组织下的构建工具(build tool)开源项目。Maven本身是插件系统的构架，内核很小，主要的功能都依靠插件实现。Maven是以Java Build Tool的角色出现在人们的视野中的，是目前Java构建工具的事实上的标准。也因为大量的插件都是围绕Java程序的构建生命周期和开发模式创造出来的，所以Maven基本也就是在Java开发中使用。其实每个语言都会有自己的倾向性的构建工具，特别为自己的开发模式所定制。
+[Maven](maven.apache.org) 是Apache组织下的构建工具(build tool)开源项目。Maven本身是插件系统的构架，内核很小，主要的功能都依靠插件实现。Maven结合Java程序的构建和开发模式定义了生命周期和构建目标。其实每个语言都会有自己的倾向性的构建工具，特别为自己的开发模式所定制。
 
-在Java开发中，面向对象和模块化是随处可见的，需要引入大量的库，也就会有依赖管理的问题。依赖管理也是最初的Java构建工具Ant相比Maven所缺失的地方。Maven项目的配置都定义在一个POM文件，其中很大的一部分就是定义依赖软件包以及版本。Maven项目从代码结构上就强调单元测试，将源代码和测试代码分别放在不同的两个目录下。也正是因为，POM文件的这种定义方式，注定了Maven基本只有Java项目才会使用。试想谁会在其他语言的项目中，用Maven定义jar包的方式定义软件的元数据呢？谁会在自己Home目录下创建一个.m2目录作为本地仓库用来存放库文件呢？RPM管理系统级别的软件包，包定义的元数据比Maven的复杂的多。Python的PIP管理python模块的下载安装，而且python是动态的脚本语言，不需要编译步骤，也不会需要一个本地仓库。
+在Java开发中，面向对象和模块化(maven中还主要是针对jar包)是随处可见的，需要引入大量的库，也就会有依赖管理的问题。依赖管理也是最初的Java构建工具Ant相比Maven所缺失的地方。Maven项目的配置都定义在一个POM文件，其中很大的一部分就是定义依赖软件包以及版本。另外Maven项目从代码结构上就强调单元测试，将源代码和测试代码分别放在预定的两个目录下。
 
 ### Jave程序的构建过程
 与用于C语言的make类比，我们常用的build tool都提供clean和compile的功能或者目标。make不知道怎么去定义具体的build动作，我们是在Makefile文件中定义源码之间的依赖关系，以及在依赖列表中的文件有更新时的动作。例如Clean通常是一个Makefile中定义的一个目标，具体的执行语句由程序员定义。
 
 Maven是在总结前人的经验的基础上的结果。在Maven的理念中，代码的构建过程可以描述为一个生命周期(life cycle)，可以涉及编译、测试、打包、部署，还预留了其他阶段的钩子接口用于其他任务，例如测试覆盖率，生成报告等等。实际上Maven将构建过程理解为多个生命周期：clean,default,site。在default生命周期，还包括compile,package等几个主要阶段。在每个阶段，完成不同的构建任务。这样整个构建过程已经经过了抽象和统一，每个任务可以由插件来完成。可见Maven是一个非常灵活的框架。
 
-<!-- more -->
-
 相比Makefile而言，就是整个编译的目标简化为clean和compile源码两个目标。源码编译的依赖关系是Java代码中import语言描述定义的，我们就不需要写具体类层面的依赖编译命令，这主要得益于Java的编译方式，但也的确简化了Maven的模型。所以其实在不考虑软件包依赖管理的情况下，Maven的POM文件可以仅仅简单的定义产出的软件包的信息。
 
-一般的Java程序在编译完成后，只是一堆.class文件和目录，我们需要有个package的步骤将它们打包，所以我们常用的maven命令是packge，而不是compile。
-``` bash
-$ maven clean package
-```
+一般的Java程序在编译完成后，只是一堆.class文件和目录，我们需要有个package的步骤将它们打包，所以我们常用的maven命令是packge，而不是compile，`mvn clean package`。
 
 一个典型的Java程序需要引入很多第三方库，而不是什么都是自己写。在用Ant管理的项目中，我们通常有一个lib目录用来存放所有项目需要的库文件。如果缺少某个库，我们就需要到网上去查找，找到官方网站下载软件包。有在早期的RedHat Linux发行版上使用经验的用户，很容易联想到当初为了让一个软件运行起来满世界找软件包的情景。YUM以集中式仓库提供软件包的方式大大的减轻的系统管理员的痛苦。Maven的依赖管理也是构建在这样的一个理念之上。在Maven源码树中，没有lib目录，只有源码和测试源码目录。在用户目录的下有个.m2的目录，它是在用户机器上的一个本地仓库，存放项目中需要的所有jar包。在编译时，maven首先访问这个仓库，获得需要依赖的jar包完成编译。如果在本地仓库没有找到相应版本的jar包，maven会从系统默认的中央仓库下载一份，放在本地仓库中。下载过的软件包都会放在这.m2目录下。
 
@@ -34,7 +29,9 @@ $ maven clean package
 - 标准的构建过程
 - 插件式的构架
 - 依赖管理
-- 软件包仓库。
+- 软件包仓库
+
+由于这几个突出的优点，maven也一度成为Java构建工具的首选。
 
 ## Maven的依赖管理
 
@@ -49,13 +46,13 @@ Maven需要解决编译中的依赖问题，就需要区分任何一个软件包
 
 - `groupId`     定义所属的项目。如果是比较大的框架项目，如SpringFramework，`groupId` 可以是spring-core这样子框架模块的形式。groupId也采用反向公司域名的方式，便于区分。
 - `artifactId`  定义包的名称。用maven生成的包，会以`artifactId`作为文件的名称，而一般的项目也由多个包/模块组成，所以通常采用项目名称做前缀。
-- `version`     定义包的版本。
+- `version`     定义包的版本。在给某个框架的多个软件包定义依赖的时候，版本是一样的，可以使用变量定义。
 - `packaging`   定义打包的方式。
 
-软件包的名称是根据定义的坐标信息确定的，一般为`artifactId-version.jar` 。根据打包方式的指定，文件扩展名可以是jar或者war。和RPM打包类似，除了生成二进制形式的软件包，还可以生成包含javadoc和source的包。这样的包，会有`artifactId-version-classifier.packaging`这样的名称。classifier不是软件包的坐标，因为`groupId`,`artifactId`,`version`三项元数据已经可以定位软件包了。classifier的作用是从一份源码中产生的多个内容不同的jar包。
+软件包的名称是根据定义的坐标信息确定的，一般为`artifactId-version.jar` 。根据打包方式的指定，文件扩展名可以是jar或者war。和RPM打包类似，除了生成二进制形式的软件包，还可以生成包含javadoc和source的包。这样的包，会有`artifactId-version-classifier.packaging`这样的名称。classifier不是软件包的坐标，因为`groupId`,`artifactId`,`version`三项元数据已经可以定位软件包了。classifier的作用是区分从一份源码中产生的多个内容不同的jar包，classifier不用在POM中定义，由生成jar包的插件来生成。
 
 ### 依赖范围
-在POM文件中，`dependencies`定义这个包依赖的其他软件包列表，每个软件包以`dependency`的方式包括进来，软件包以坐标的形式描述。通常Java的项目都会用到JUnit作为单元测试工具，留意依赖的定义，会发现多一个描述tag `scope`。`scope`用来定义这个依赖的应用范围。
+在POM文件中，`dependencies`定义这个包依赖的其他软件包列表，每个软件包以`dependency`的方式包括进来，软件包以坐标的形式描述。通常Java的项目都会用到JUnit作为单元测试工具，留意依赖的定义，会发现多一个描述tag `scope`。`scope`用来定义这个依赖的应用范围。`scope`为`test`，就是说这个包在测试的时候需要，而不用来编译或者运行时。运行Java程序，除了系统默认的jar包外，其他依赖的包需要放在`classpath`上才能找到。在Maven项目的开发中，我们通常有三种应用场景：compile, test, runtime。JUnit这样的软件包就是只在测试阶段才使用的软件包，有些包则是运行时依赖。
 
 ``` xml
   <dependencies>
@@ -67,8 +64,6 @@ Maven需要解决编译中的依赖问题，就需要区分任何一个软件包
     </dependency>
   </dependencies>
 ```
-
-运行Java程序，除了系统默认的jar包外，其他依赖的包需要放在`classpath`上才能找到。在Maven项目的开发中，我们通常有三种应用场景：compile, test, runtime。JUnit这样的软件包就是只在测试阶段才使用的软件包，有些包则是运行时依赖。
 
 依赖的范围可以是：
 
@@ -101,7 +96,7 @@ Maven在解析依赖的时候，对于冲突的依赖，可以采用排除的方
 ```
 
 ### 可选依赖
-Maven允许一种特殊的依赖关系: optional 。可选依赖的应用场景是，当你开发了一个软件包，例如某种框架，设计上是兼容多种数据库实现的，但是在具体的项目例子中只能使用一种数据库技术。数据库方案的采用是互斥的，但是框架设计时不确定用哪一种。在框架中可以声明两个依赖，都是optional依赖。
+Maven允许一种特殊的依赖关系: optional 。可选依赖的应用场景是，当你开发了一个某种框架，设计上是兼容多种数据库实现的，但是在具体的项目例子中只能使用一种数据库技术。数据库方案的采用是互斥的，但是框架设计时不确定用哪一种。在你设计框架时可以声明两个依赖，都是optional依赖。其他代码依赖这个框架时，需要指定具体使用哪个数据库依赖。
 
 ``` xml
 <dependency>
@@ -152,18 +147,18 @@ $ mvn dependency:analyze
 </modules>
 ```
 
-当我们管理多个模块的时候，每个模块都会定义相同的`groupId`和`version`，因为他们属于同一个项目，采用相同的发布进度。而且在多个模块之间很可能采用相同的依赖关系和插件配置。所以我们可以创建一个parent pom文件，抽取所有相同的配置到parent pom文件，模块POM文件继承在parent中的设置。
+当我们管理多个模块的时候，每个模块都会定义相同的`groupId`和`version`，因为他们属于同一个项目，采用相同的发布进度。而且在多个模块之间很可能采用相同的依赖关系和插件配置。所以我们可以创建一个parent pom文件，抽取所有相同的配置到parent pom文件，其他模块POM文件继承在parent中的设置。
 
-在模块POM文件中，定义parent模块的坐标信息。
 ``` xml
 <parent>
     <groupId>parent project</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.0</version>
+    <relativePath>../parent/pom.xml</relativePath>
 </parent>
 ```
 
-我们可以将各个模块都使用的依赖关系都是抽取到parent pom文件中。但是不能简单地在parent pom文件中声明dependencies，那样所有的模块都会拥有这些依赖，不管需不需要。所以我们在parent模块中定义`dependencyManagement`，管理所有的依赖关系的定义，尤其是版本信息。而模块的POM文件定义使用哪些依赖，而不必定义版本。这样我们需要更新依赖的时候，只需要修改parent pom文件。同样地原理也适用于plugin管理，在parent pom中定义`pluginManagement`。为了方便书写，我们可以使用`properties`来定义变量。
+我们可以将各个模块都使用的依赖关系都是抽取到parent pom文件中。但是不能简单地在parent pom文件中声明dependencies，那样所有的模块都会继承拥有这些依赖，不管需不需要。所以我们在parent模块中定义`dependencyManagement`，管理所有的依赖关系的定义，尤其是版本信息。而模块的POM文件定义使用哪些依赖，而不必定义版本。这样我们需要更新依赖的时候，只需要修改parent pom文件。同样地原理也适用于plugin管理，在parent pom中定义`pluginManagement`。为了方便书写，我们可以使用`properties`来定义变量。
 
 ``` xml
 <properties>
@@ -202,16 +197,16 @@ $ mvn dependency:analyze
     </pluginManagement>
 </build>
 ```
-parent pom和aggregator pom作用不同，不过都可以理解为模块的parent。一个是配置的parent，一个是module编译关系的parent，很自然我们可以用一个pom文件来组织所有这些信息。
+parent pom和aggregator pom作用不同，不过都可以理解为模块的parent。一个是配置的parent，一个是module编译关系的parent，很自然我们可以用一个pom文件来组织所有这些信息。relativePath的缺省值是../pom.xml，也就是说maven鼓励使用唯一的顶层pom.xml作为管理多个模块和管理相同设置的pom文件。
 
-如果觉得spring框架的依赖管理列表很长，我们甚至可以采用将spring框架的依赖列表单独写成一个POM文件，然后在parent pom文件中import这个POM文件。依赖里面的`type`就对应软件包信息定义里的`packaging`。下面的例子，在parent pom中导入一个独立的spring框架的依赖定义文件。
+如果觉得spring框架的依赖管理列表很长，我们甚至可以采用将spring框架的依赖管理列表单独写成一个POM文件，然后在parent pom文件中import这个POM文件。依赖里面的`type`就对应软件包信息定义里的`packaging`。下面的例子，在parent pom中导入一个独立的spring框架的依赖定义文件。
 
 ``` xml
 <dependencyManagement>
     <dependencies>
         <dependency>
-            <groupId>spring framework</groupId>
-            <artifactId>framework dependency definition</artifactId>
+            <groupId>project.groupid</groupId>
+            <artifactId>dependencylist</artifactId>
             <version>1.0.0</version>
             <type>pom</type>
             <scope>import</scope>
@@ -260,6 +255,7 @@ Maven只给几个重要的生命周期阶段绑定了默认的插件，其他的
 ```
 
 在插件的定义中，也可以定义插件的全局配置。例如配置maven-compiler-plugin，告诉它使用Java的1.6版本。那么所有属于这个插件的目标都使用这个配置。
+
 ``` xml
 <build>
   <plugins>
@@ -336,6 +332,7 @@ Maven默认的中央仓库是apache maven项目维护的。Maven区分依赖和�
 - ignore    忽略校验和错误
 
 如果远程仓库需要认证，在settings.xml中配置服务器的认证信息。远程仓库一般不需要认证，认证配置主要用于Nexus私服。`id`用来匹配仓库的定义的`id`。POM文件是应该提交到SCM代码仓库里的，settings.xml因为包含私密信息，不能提交。
+
 ``` xml
 <servers>
   <server>
@@ -368,5 +365,3 @@ mirrorOf的值可以是：
 
 ## References
 本文参考了许晓斌的Maven实战一书。《Maven实战》内容很充实，涵盖Maven应用的原理和实践，被同事称为神书。不过略有遗憾的地方是，没有对于一些插件的应用做详细的讲解。有些章节也没有写得必要。我总觉得Maven应该是可以用一篇文章讲明白原理的工具，所以有这篇Essential Maven。而且在日常的使用中，好的模板文件对于理解Maven也很重要。
-
-- Template files of pom.xml and settings.xml
