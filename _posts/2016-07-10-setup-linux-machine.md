@@ -32,6 +32,7 @@ published: false
       - Adobe Source Han Sans https://github.com/adobe-fonts/source-han-sans
   - 安装和配置zsh
     - zsh使用`.profile`
+  - Install Gnome Tweak Tool to Swap the Ctrl and CapsLock 
 
 ### Input Method
 
