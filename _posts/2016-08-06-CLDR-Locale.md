@@ -50,7 +50,7 @@ unicode_language_id
 (sep unicode_variant_subtag)* ;
 ```
 
-unicode_language_id是在CLDR中BCP47的language tags的对应定义。常见的POSIX风格的locale id可以认为是language subtag + region subtag。所有的subtags都在IANA有[注册](http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry)。CLDR将这些subtag放在`common/validity/`目录下的文件里: language, script, region, variant, 也包括currency和unit这样和语言无关的subtag。
+unicode_language_id是在CLDR中BCP47的language tags的对应定义。常见的POSIX风格的locale id可以认为是language subtag + region subtag。所有的subtags都在IANA有[注册](http://www.iana.org/assignments/language-subtag-registry/language-subtag-registry)。CLDR将这些subtag放在`common/validity/`目录下的文件里: language, script, region, variant, 也包括currency和unit这样和语言无关的subtag。这些文件是机器可读的，所以我们并不容易理解其中的定义。
 
 作为速查，在这里也抄录作为无定义(undefined/unknown)时使用的subtag值。
 
@@ -65,8 +65,7 @@ unicode_language_id是在CLDR中BCP47的language tags的对应定义。常见的
 |Subdivision|	ZZZZ|	Unknown or Invalid Subdivision        |
 |-----------|-----|---------------------------------------|
 
-[Language tags in HTML and XML](https://www.w3.org/International/articles/language-tags/)对于这些subtags有非常好的讲解。从CLDR的角度，上面的BNF范式定义的是Language ID，完整的Locale ID的
-格式是`language-extlang-script-region-variant-extension-privateuse`，当然不用每个域都指定。这篇文档非常出色，请仔细阅读。
+[Language tags in HTML and XML](https://www.w3.org/International/articles/language-tags/)对于这些subtags有非常好的讲解。这篇文档非常出色，请仔细阅读。从CLDR的角度，上面的BNF范式定义的是Language ID，完整的Locale ID的格式是`language-extlang-script-region-variant-extension-privateuse`，当然不用每个域都指定。下面有简单讲解Unicode支持的扩展。CLDR文档在BCP47 Conformance一节，明确提到不支持extlang的。
 
 关于Language ID的连接符和大小写规范：
 
@@ -74,7 +73,7 @@ unicode_language_id是在CLDR中BCP47的language tags的对应定义。常见的
 
 scripts subtags仅应该在需要明确指定语言的变种的时候使用。典型的script subtags是中文的Hans和Hant，还有Bopomofo。以前我们用`zh_CN`隐含表示使用简体，用`zh_TW`隐含表示使用繁体，实际上使用Hans和Hant是正确的方法。
 
-如果想指定没有script呢？例如语音材料。
+如果想指定没有script呢？例如为语音材料指定locale。
 
 > If you specifically want to indicate that content is not written, there is a subtag for that. For example, you could use **en-Zxxx** to make it clear that an audio recording in English is not written content.
 
@@ -123,11 +122,11 @@ Examples:
 |und-u-cu-USD |root-u-cu-usd  |changed, because region subtag is present |
 |cmn-TW       |zh_TW          |language alias  |
 |sr-CS        |sr-RS          |territory alias |
-|sh           |sr-Latin       |multiple replacement subtags, 3.1 above |
+|sh           |sr-Latn        |multiple replacement subtags, 3.1 above |
 |sh-Cyrl      |sr-Cyrl        |no replacement with multiple subtags, 3.1 above |
 |hy-SU        |hy-AM          |multiple territory values, 4.2 above. <territoryAlias type="SU" replacement="RU AM AZ BY EE GE KZ KG LV LT MD TJ TM UA UZ" …/> |
 
-sh -> sr-Latin， sh是sr的别名，所以替换，同时因为没有script subtags，所以附加Latin。而下一条，由于已经有Cyrl，所以仅替换为sr。在CLDR的languageAlias元素中，实际上定义了别名到标准名称的转换。
+languageAlias的定义在文件`common/supplemental/supplementalMetadata.xml`中。 `<languageAlias type="sh" replacement="sr_Latn" reason="legacy"/>`定义了别名替换。sh是sr的别名，所以替换，同时因为没有script subtags，所以附加Latn。而下一条，由于已经有Cyrl，所以仅替换为sr。有点复杂。hy-SU的例子，需要用到likely subtags的概念，相应的定义在`common/supplemental/likelySubtags.xml`。hy语言的likely subtag定义`<likelySubtag from="hy" to="hy_Armn_AM"/>`，所以替换后是`hy-AM`。
 
 #### Locale Identifier on Unix
 > On POSIX platforms such as Unix, Linux and others, locale identifiers are defined by [ISO 15897](https://en.wikipedia.org/wiki/ISO_15897), which is similar to the BCP 47 definition of language tags, but the locale variant modifier is defined differently, and the character set is included as a part of the identifier. It is defined in this format: `[language[_territory][.codeset][@modifier]]`.                          --- from wikipedia
