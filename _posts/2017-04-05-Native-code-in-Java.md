@@ -6,7 +6,6 @@ modified: 2017-04-05
 categories: [Java]
 published: true
 ---
-{% include toc %}
 
 在Java的源码里面，有些实现部分是使用native代码来实现的，其实也就是用C/CPP来实现。在Java的代码里面，
 使用关键字native来标记一个方法是native code。我们最容易发现是由native代码来实现的函数，很可能就是
@@ -140,7 +139,7 @@ JVM_ENTRY(jobject, JVM_Clone(JNIEnv* env, jobject handle))
 JVM_END
 ```
 
-整个的代码实现相对于其他Object的native方法要长很多，大概是因为有很多内存的操作吧。这里使用JVM_ENTRY宏组织
+整个的代码实现相对于其他Object的native方法要长很多，大概是因为有很多后续的操作吧。这里使用JVM_ENTRY宏组织
 native方法，可以看出内存的拷贝使用很直接的方法。也可以找到抛出异常的代码。
 
 以clone()这个函数为例子，我们大概就可以找到以后如何查询和分析native代码的思路了。
