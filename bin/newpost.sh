@@ -1,6 +1,10 @@
 #!/bin/bash
 
-SCRIPT_DIR=`basename $0`
+pushd . > /dev/null
+SCRIPT_DIR=$(dirname $0)
+POST_DIR=${SCRIPT_DIR}/../_posts
+
+cd ${POST_DIR}
 
 DATE=`date +%F`
 TIME=`date +%T`
@@ -23,3 +27,5 @@ published: false
 {% include toc %}
 
 EOF
+
+popd
