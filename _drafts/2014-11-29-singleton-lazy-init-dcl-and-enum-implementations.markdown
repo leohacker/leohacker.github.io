@@ -61,8 +61,9 @@ synchronized修饰符是多线程编程的主要工具，使用synchronized的�
 
 双重检查锁不是在Java中特有的，其他语言也会使用这个模式。是否应用这个模式，更多的取决于编程语言在多线程环境下的内存模型。Refer: [Double checked lokcing](http://en.wikipedia.org/wiki/Double-checked_locking)。
 
-这个历史上被很多文章推荐的，但是却是有瑕疵的，实现是这样的：
-``` java
+这个历史上被很多文章推荐的，但是却是有瑕疵的实现是这样的：
+
+```java
 public class Singleton {
     private static Singleton instance;
     private Singleton() {}
@@ -151,4 +152,3 @@ public enum Singleton {
 ```
 
 Refer: [Why num singleton are better in java](http://javarevisited.blogspot.com/2012/07/why-enum-singleton-are-better-in-java.html) and "Effective Java"
-

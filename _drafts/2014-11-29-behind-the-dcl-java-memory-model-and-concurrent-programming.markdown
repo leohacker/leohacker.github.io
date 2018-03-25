@@ -9,7 +9,7 @@ toc: true
 published: true
 ---
 
-在这篇博客中，我试图从经典的DCL失效的例子出发，引述Goetz的经典文章，来说清楚原来的JMM的问题所在，以启发大家对并发编程中如何访问共享内存的思考，以及相关的synchronized, volatile, final的语义的正确理解。
+在这篇博客中，我试图从经典的DCL(Double Checked Locking)失效的例子出发，引述Goetz的经典文章，来说清楚原来的JMM的问题所在，以启发大家对并发编程中如何访问共享内存的思考，以及相关的synchronized, volatile, final的语义的正确理解。
 
 ## DCL Idiom
 DCL(Double Checked Locking)伴随多线程编程中竞争条件(race condition)概念才会出现的一段经典代码，在一般的语义上，这段代码解决了竞争条件的问题。不过，基于JMM(Java Memory Model)，尤其是Java1.4及以前版本的，这段代码是有问题的。
@@ -34,22 +34,21 @@ Reference:
  - [Double-checked locking: Clever, but broken](http://www.javaworld.com/article/2074979/java-concurrency/double-checked-locking--clever--but-broken.html)
  - [Can double-checked locking be fixed?](http://www.javaworld.com/article/2075306/java-concurrency/can-double-checked-locking-be-fixed-.html)
 
-在文章"Double-checked locking: Clever, but broken"中，作者指出由于`resource = new Resource()`实际包含多个步骤，由于编译优化的原因，一个没有初始化的内存地址可以被先赋值给resource变量，而由于第一次检查不受synchronized约束，可以获取resource变量的值，于是出现返回一个没有初始化的对象的错误情况。这个解释很多地方都有，我不在引述，请参考原文。
+在文章"Double-checked locking: Clever, but broken"中，作者指出由于`resource = new Resource()`实际包含多个步骤，由于编译优化的原因，一个没有初始化的内存地址可以被先赋值给resource变量，而由于第一次检查不受synchronized约束，可以获取resource变量的值，于是出现返回一个没有初始化的对象的错误情况。这个解释很多地方都有，我不再引述，请参考原文。
 
 在文章中，作者甚至更进一步的指出，即使resouce变量在退出同步语句块后正确的赋值了，也可能还是会存在问题。这个read barrier是多数人没有概念的吧？
 
 > Other concurrency hazards are embedded in DCL -- and in any unsynchronized reference to memory written by another thread, even harmless-looking reads. Suppose thread A has completed initializing the Resource and exits the synchronized block as thread B enters getResource(). Now the Resource is fully initialized, and thread A flushes its local memory out to main memory. The resource's fields may reference other objects stored in memory through its member fields, which will also be flushed out. While thread B may see a valid reference to the newly created Resource, because it didn't perform a read barrier, it could still see stale values of resource's member fields.
 
-<!-- more -->
-
 ## Concurrent programming in Java
 要理解Java Memory Model，先让我们回顾关于线程的基本概念。
 
-什么是线程？线程是在进程内部更低一级的执行单元，线程可以共享进程内部的资源。以JMM的术语，就是存放在堆上的数据都是共享的，例如实例成员，静态成员，数组，局部变量是不用共享的。Java线程间通过共享的数据通信。Java的语言规范是要跨平台的，所以在设计线程支持时，必须要考虑设计一个抽象的概念来兼容所有硬件平台。所以在抽象中，每个线程有自己的local memory，进程有个main memory，线程在同步原语发生时同步local memory和main memory里面的数据。
+什么是线程？线程是在进程内部更低一级的执行单元，线程可以共享进程内部的资源。以JMM的术语，就是存放在堆上的数据都是共享的，例如实例成员，静态成员，数组。局部变量是不用共享的。Java线程间通过共享的数据通信。Java的语言规范是要跨平台的，所以在设计线程支持时，必须要考虑设计一个抽象的概念来兼容所有硬件平台。所以在抽象中，每个线程有自己的local memory，进程有个main memory，线程在同步原语发生时同步local memory和main memory里面的数据。
 
 在并发编程中，我们主要考虑多线程竞争条件带来的访问共享变量的问题。这带来同步，锁，死锁等经典问题。多核、多CPU、CPU缓存、编译的寄存器优化等，也带来很多存储位置的同步问题。编译优化中的指令并行和指令顺序调整也会在多线程中造成困恼。
 
 所以Java语言设计了JMM和基本的工具来帮助我们同步和保护我们的数据访问。C语言以前是没有MemoryModel的，据说现在好像开始搞了。
+
 > By contrast, languages like C and C++ do not have explicit memory models -- C programs instead inherit the memory model of the processor executing the program (although the compiler for a given architecture probably does know something about the memory model of the underlying processor, and some of the responsibility for compliance falls to the compiler). This means that concurrent C programs may run correctly on one processor architecture, but not another. While the JMM may be confusing at first, there is a significant benefit to it -- a program that is correctly synchronized according to the JMM should run correctly on any Java-enabled platform.
 
 ## Semantics of synchronized

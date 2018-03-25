@@ -17,24 +17,46 @@ Docker技术提供了操作系统层面的虚拟化技术，利用Linux内核的
 类似Github, [Docker Hub](https://hub.docker.com)提供了管理Docker容器镜像的功能，类似于Git仓库的使用方式和概念，可以建立一个镜像的多个版本，版本是用tag来标识的。
 
 ### Install
-需要安装的Docker是Docker Engine，主要的功能是运行Docker Image。Docker Engine提供Restful API，Docker CLI通过调用这些API提供用户操作的界面。
+需要安装的是Docker CE (Community Edition)，以前叫Docker Engine，主要的功能是运行Docker Image。Docker CE提供Restful API，Docker CLI通过调用这些API提供用户操作的界面。
 
 ```bash
+# remove the old versions.
+$ sudo apt-get remove docker docker-engine docker.io
+
 $ sudo apt-get update
-$ sudo apt-get install apt-transport-https ca-certificates
-
-# use the server in ubuntu. the server mentioned in official doc is too busy to response.
-$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
-
-#
-$ echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
-$ sudo apt-get update
-
+$ sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
 $ sudo apt-get install linux-image-extra-$(uname -r) linux-image-extra-virtual
-$ sudo apt-get install docker-engine
 
+# pls follow the install guide if key changed.
+# https://docs.docker.com/engine/installation/linux/docker-ce/ubuntu/#install-using-the-repository
+#
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+$ sudo apt-key fingerprint 0EBFCD88
+
+$ sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+# or use the below command
+# $ echo "deb https://apt.dockerproject.org/repo ubuntu-xenial main" | sudo tee /etc/apt/sources.list.d/docker.list
+
+$ sudo apt-get update
+$ sudo apt-get install docker-ce
+
+# start the docker engine
+$ sudo systemctl start docker
+# or
 $ sudo service docker start
+
+# Start docker on boot (systemd)
 $ sudo systemctl enable docker
+
+# Start docker on boot (upstart)
+$  echo manual | sudo tee /etc/init/docker.override
+
+# Start docker on boot (chkconfig)
+$ sudo chkconfig docker on
 
 # make you run the docker without sudo.
 $ sudo groupadd docker
@@ -43,6 +65,12 @@ $ sudo usermod -aG docker $USER
 # show the info of docker engine.
 $ docker info
 ```
+
+### Custom docker daemon options
+There are a number of ways to configure the daemon flags and environment variables for your Docker daemon. The recommended way is to use the platform-independent daemon.json file, which is located in /etc/docker/ on Linux by default. See [Daemon configuration file](https://docs.docker.com/engine/reference/commandline/dockerd//#daemon-configuration-file).
+
+You can configure nearly all daemon configuration options using daemon.json. The following example configures two options. One thing you cannot configure using daemon.json mechanism is a HTTP proxy.
+
 
 ### Image Management
 ```bash
