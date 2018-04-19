@@ -257,3 +257,5 @@ show_drafts: null
 limit_posts: 0
 future:      true
 unpublished: false
+
+theme: jekyll-theme-hacker
